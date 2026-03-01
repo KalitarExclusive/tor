@@ -1,0 +1,5 @@
+# HTTP library with SOCKS proxy support for Tor
+requests[socks]>=2.31.0
+
+# Alternative: install PySocks separately if needed
+# PySocks>=1.7.1
