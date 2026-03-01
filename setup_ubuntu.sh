@@ -47,20 +47,38 @@ fi
 # Install Python dependencies
 echo "[5/5] Installing Python dependencies..."
 if command -v pip3 &> /dev/null; then
+    pip3 install --upgrade pip
     pip3 install -r requirements.txt
+    echo "  ✓ Python dependencies installed"
 elif command -v pip &> /dev/null; then
+    pip install --upgrade pip
     pip install -r requirements.txt
+    echo "  ✓ Python dependencies installed"
 else
-    echo "  Warning: pip not found. Please install Python dependencies manually:"
-    echo "  pip install -r requirements.txt"
+    echo "  ✗ pip not found. Installing pip..."
+    sudo apt install python3-pip -y
+    pip3 install -r requirements.txt
+    echo "  ✓ Python dependencies installed"
 fi
+
+# Verify installation
+echo ""
+echo "Verifying installation..."
+python3 -c "import requests, socks; print('  ✓ All Python packages imported successfully')" 2>/dev/null || {
+    echo "  ✗ Package verification failed. Retrying installation..."
+    pip3 install --force-reinstall requests PySocks
+}
 
 echo ""
 echo "=========================================="
 echo "Setup complete!"
 echo "=========================================="
 echo ""
-echo "You can now run the script:"
+echo "Running verification test..."
+python3 test_setup.py
+
+echo ""
+echo "If the test passed, you can now run:"
 echo "  python3 check_onions_parallel.py --limit 100 --workers 10"
 echo ""
 echo "Useful commands:"
@@ -68,4 +86,5 @@ echo "  Check Tor status:  sudo systemctl status tor"
 echo "  Stop Tor:          sudo systemctl stop tor"
 echo "  Start Tor:         sudo systemctl start tor"
 echo "  Restart Tor:       sudo systemctl restart tor"
+echo "  Fix dependencies:  ./fix_dependencies.sh"
 echo ""

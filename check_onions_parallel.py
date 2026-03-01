@@ -16,7 +16,9 @@ Prerequisites (Ubuntu/Debian):
        # Tor should be listening on 127.0.0.1:9050
     
     4. Install Python dependencies:
-       pip install -r requirements.txt
+       pip3 install -r requirements.txt
+       # Or manually:
+       pip3 install requests PySocks
 
 Usage:
     python check_onions_parallel.py --limit 100 --workers 10 --timeout 10
@@ -94,12 +96,29 @@ def check_tor_connection():
                 return True
         print("✗ Connected but not through Tor")
         return False
+    except ImportError as e:
+        print(f"✗ Missing Python dependencies: {e}")
+        print("\nPlease install required packages:")
+        print("  pip3 install requests PySocks")
+        print("  # or")
+        print("  pip3 install -r requirements.txt")
+        return False
     except requests.RequestException as e:
+        error_msg = str(e)
         print(f"✗ Cannot connect to Tor proxy at 127.0.0.1:9050")
-        print(f"  Error: {e}")
-        print("\nPlease ensure Tor is installed and running:")
-        print("  sudo apt update && sudo apt install tor -y")
-        print("  sudo systemctl start tor")
+        
+        if "SOCKS" in error_msg or "dependencies" in error_msg.lower():
+            print("  Error: Missing SOCKS support")
+            print("\nPlease install PySocks:")
+            print("  pip3 install PySocks")
+        else:
+            print(f"  Error: {e}")
+            print("\nPlease ensure Tor is installed and running:")
+            print("  sudo apt update && sudo apt install tor -y")
+            print("  sudo systemctl start tor")
+            print("\nVerify Tor is listening:")
+            print("  sudo systemctl status tor")
+            print("  sudo netstat -tlnp | grep 9050")
         return False
 
 

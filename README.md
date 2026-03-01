@@ -7,6 +7,27 @@ Onion URL Finder is a Python script that generates random .onion URLs and checks
 - Python 3.x
 - Tor
 
+## Quick Start
+
+After cloning the repository:
+
+```sh
+# Make scripts executable
+chmod +x setup_ubuntu.sh fix_dependencies.sh
+
+# Run automated setup
+./setup_ubuntu.sh
+
+# If you get SOCKS dependency errors, run:
+./fix_dependencies.sh
+
+# Test your setup
+python3 test_setup.py
+
+# Start checking onion URLs
+python3 check_onions_parallel.py --limit 10
+```
+
 ## Installation
 
 ### Quick Setup (Ubuntu/Debian)
@@ -54,6 +75,22 @@ Make sure you have Python 3 and `pip` installed. Then, install the required Pyth
 ```sh
 pip3 install -r requirements.txt
 ```
+
+Or install packages individually:
+
+```sh
+pip3 install requests PySocks
+```
+
+#### Step 4: Verify Installation
+
+Run the test script to verify everything is working:
+
+```sh
+python3 test_setup.py
+```
+
+This will check if Tor is running and Python dependencies are properly installed.
 
 ## Usage
 
@@ -114,6 +151,18 @@ If you get a connection error:
    ```
 
 ### Python Dependencies
+
+If you get "Missing dependencies for SOCKS support" error:
+
+```sh
+pip3 install --upgrade pip
+pip3 install --force-reinstall requests PySocks
+```
+
+Verify the installation:
+```sh
+python3 test_setup.py
+```
 
 If you encounter import errors, reinstall dependencies:
 ```sh
